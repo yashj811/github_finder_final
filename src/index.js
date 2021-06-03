@@ -1,17 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import axios from "axios";
+import "./index.css";
+import Navbar from "./components/layouts/Navbar";
+import Users from "./components/users/Users";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class Index extends React.Component {
+  state = {
+    users: [],
+    loading: false,
+  };
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  async componentDidMount() {
+    this.setState({ loading: true });
+    const res = await axios.get("https://api.github.com/users");
+    this.setState({ users: res.data, loading: false });
+  }
+  render() {
+   const {users,loading} = this.state;
+    return (
+      <div className="">
+        <Navbar />
+        <div className="">
+          <Users users = {users} loading={loading} />
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Index />, document.getElementById("root"));
